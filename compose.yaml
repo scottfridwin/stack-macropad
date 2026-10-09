@@ -1,0 +1,39 @@
+networks:
+  public:
+    external: true
+
+secrets:
+  macropad_homeassistant_token:
+    file: ${DIR_CONFIG}/secrets/macropad_homeassistant_token
+
+services:
+  macropad:
+    image: ghcr.io/scottfridwin/homeassistant-macropad-bridge:1.0.0
+    container_name: macropad-bridge
+    user: "${UID_MACROPAD}:${GID_SERVICES}"
+    group_add:
+      - "${GID_INPUT}"
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      public:
+    volumes:
+      - /dev/input:/dev/input:ro
+    device_cgroup_rules:
+      - "c 13:* r" # read-only access to input devices only
+    environment:
+      - HA_URL=http://${LOCALIP_HOME_ASSISTANT}:8123
+      - HA_TOKEN_FILE=/run/secrets/macropad_homeassistant_token
+      - MACROPAD_VID=1189
+      - MACROPAD_PID=8890
+      # Home Assistant's macropad automation maps this name to media_player.first_floor
+      - DEVICE_NAME=diningroom_kiosk
+      - EVENT_TYPE=macropad_key
+    secrets:
+      - macropad_homeassistant_token
+    restart: unless-stopped

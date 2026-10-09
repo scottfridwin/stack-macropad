@@ -1,0 +1,31 @@
+{
+  "extends": [
+    "config:recommended"
+  ],
+  "prCreation": "immediate",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/(^|/)compose\\.ya?ml$/",
+        "/(^|/)docker-compose\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "image:\\s*(?<depName>[^\\s:@]+)(?::(?<currentValue>[^\\s@]+))?"
+      ],
+      "datasourceTemplate": "docker"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Own image: tested and released by its repo, so deploy minor/patch updates hands-off",
+      "matchPackageNames": ["ghcr.io/scottfridwin/homeassistant-macropad-bridge"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "ignoreTests": true
+    }
+  ],
+  "assignees": [
+    "scottfridwin"
+  ]
+}
