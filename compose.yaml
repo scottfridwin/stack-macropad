@@ -8,7 +8,7 @@ secrets:
 
 services:
   macropad:
-    image: ghcr.io/scottfridwin/homeassistant-macropad-bridge:1.0.0
+    image: ghcr.io/scottfridwin/homeassistant-macropad-bridge:1.0.1
     container_name: macropad-bridge
     user: "${UID_MACROPAD}:${GID_SERVICES}"
     group_add:
